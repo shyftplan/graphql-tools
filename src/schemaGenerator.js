@@ -260,9 +260,16 @@ function addErrorLoggingToSchema(schema, logger) {
   });
 }
 
+// XXX right now if outer resolver returns null or undefined,
+// inner resolver will not run. This matches the expected behavior
+// for a simulated root resolve function, but if wrapResolver is
+// used in other ways in the future, this might need to be reconsidered
 function wrapResolver(innerResolver, outerResolver) {
   return (obj, args, ctx, info) => {
     const root = outerResolver(obj, args, ctx, info);
+    if (root === null || typeof root === 'undefined') {
+      return root;
+    }
     if (innerResolver) {
       return innerResolver(root, args, ctx, info);
     }
