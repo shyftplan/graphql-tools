@@ -5,3 +5,4 @@ import './testTracer';
 import './testMocking';
 import './testApolloServer';
 import './testApolloServerHTTP';
+import './testDecorators';
