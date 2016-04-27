@@ -46,13 +46,13 @@ class SchemaIterator {
   }
 }
 
-function applyDecorators(decoratedThing) {
+function applyOwnDecorators(decoratedThing) {
   return decoratedThing;
 }
 
 // this will look for any decorators defined in the schema and apply them,
-// starting with the innermost decorator
-function applySchemaDecorators(schema) {
+// starting with the innermost decorator: args, fields, types, schema
+function applyDecorators(schema) {
   // XXX we could also traverse the schema once first, and remember the
   // locations of decorators, so we can apply them right away, but that's
   // an optimization we can do later.
@@ -62,10 +62,10 @@ function applySchemaDecorators(schema) {
   schemaIterator.forEachField();
   schemaIterator.forEachType();
 
-  applyDecorators(schema);
+  applyOwnDecorators(schema);
 
   // modifies the schema in-place, doesn't return anything.
 }
 
 
-export { SchemaIterator, applySchemaDecorators };
+export { SchemaIterator, applyDecorators };

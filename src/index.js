@@ -20,3 +20,8 @@ export {
 export {
   apolloServer,
 } from './apolloServer';
+
+export {
+  SchemaIterator,
+  applyDecorators,
+} from './decorate';
