@@ -1,3 +1,8 @@
+import {
+  GraphQLEnumType,
+  GraphQLScalarType,
+} from 'graphql';
+
 // Decorators let you transform a GraphQL schema in lots and lots of cool ways!
 
 class SchemaIterator {
@@ -46,9 +51,47 @@ class SchemaIterator {
   }
 }
 
-function applyOwnDecorators(decoratedThing) {
-  return decoratedThing;
+/* function applySchemaDecorators(schema) {
+  // TODO: schema config gets parsed, so decorators are lost.
+  return schema;
+} */
+
+function applyTypeDecorators(type) {
+  let decorators;
+  if (type instanceof GraphQLEnumType) {
+    decorators = type._enumConfig.decorators;
+  } else if (type instanceof GraphQLScalarType) {
+    decorators = type._scalarConfig.decorators;
+  } else {
+    decorators = type._typeConfig.decorators;
+  }
+
+  if (!decorators) {
+    return;
+  }
+
+  decorators.forEach((decoratorFunction) => {
+    decoratorFunction(type);
+  });
 }
+
+function applyFieldDecorators(field) {
+  const decorators = field.decorators;
+
+  if (!decorators) {
+    return;
+  }
+
+  decorators.forEach((decoratorFunction) => {
+    decoratorFunction(field);
+  });
+}
+
+
+/* function applyArgDecorators(arg) {
+  // TODO args get parsed, so we lose the decorators.
+  throw new Error(`Args decorators not supported yet (at arg ${arg.name})`);
+} */
 
 // this will look for any decorators defined in the schema and apply them,
 // starting with the innermost decorator: args, fields, types, schema
@@ -58,11 +101,13 @@ function applyDecorators(schema) {
   // an optimization we can do later.
   const schemaIterator = new SchemaIterator(schema);
 
-  schemaIterator.forEachArg();
-  schemaIterator.forEachField();
-  schemaIterator.forEachType();
+  // TODO: enable arg decorators when they're ready.
+  // schemaIterator.forEachArg(applyArgDecorators);
+  schemaIterator.forEachField(applyFieldDecorators);
+  schemaIterator.forEachType(applyTypeDecorators);
 
-  applyOwnDecorators(schema);
+  // TODO: enable schema decorators when they're ready.
+  // applySchemaDecorators(schema);
 
   // modifies the schema in-place, doesn't return anything.
 }
