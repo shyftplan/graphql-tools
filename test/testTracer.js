@@ -73,9 +73,10 @@ describe('Tracer', () => {
     const testQuery = `{
       returnErr
     }`;
-    return graphql(jsSchema, testQuery, null, { tracer }).then(() => {
+    return graphql(jsSchema, testQuery, null, { tracer }).then((res) => {
       const report = tracer.report('');
       expect(report.events.length).to.equal(2);
+      expect(res.errors.length).to.equal(1);
     });
   });
 
