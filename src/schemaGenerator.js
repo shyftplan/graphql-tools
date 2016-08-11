@@ -4,7 +4,7 @@
 // and what it outputs.
 
 import { parse, Kind } from 'graphql/language';
-import uniq from 'lodash.uniq';
+import { uniq } from 'lodash';
 import { buildASTSchema, extendSchema } from 'graphql/utilities';
 import {
   GraphQLScalarType,
